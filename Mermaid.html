@@ -1,0 +1,100 @@
+
+<!DOCTYPE html>
+<html>
+<head>    
+</head>
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@9/dist/mermaid.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    
+    <textarea rows="10" cols="100" id="txtData" >
+        flowchart LR
+        id1{Is your application<br/> considered as SLA?}
+        click id1 call callbackFunction(0) "tooltip"
+
+    </textarea>
+    <br/>
+    
+    <div id="output"></div>
+
+    <script type="text/javascript">
+  
+    $(document).ready(function () {
+        mermaid.initialize({startOnLoad: true, securityLevel: 'loose'});
+        GenerateDiagram();
+      });
+
+        function GenerateDiagram() 
+        {
+            mermaid.render('thegraph', $('#txtData').val(), insertSvg);
+        }
+
+        const insertSvg = function(svgCode, bindFunctions)
+        {
+            let el = document.getElementById('output');
+            el.innerHTML = svgCode;
+            bindFunctions(el);
+        }
+
+        function callbackFunction (tt) 
+        {
+            let str;
+
+            if(tt == 0)
+            {
+                str = `id1 --> id1Yes[Yes] 
+                        click id1Yes call callbackFunction(1) "tooltip"
+                        id1 --> id1No[No] 
+                        click id1No call callbackFunction(2) "tooltip"
+                        `;
+            }
+            else if(tt == 1)
+            {
+                str = `
+                id1 --> id1Yes[Yes] 
+                        click id1Yes call callbackFunction(1) "tooltip"
+                        id1 --> id1No[No] 
+                        click id1No call callbackFunction(2) "tooltip"
+                        id1Yes -->id2{Have you taken questionnaire?}
+                        click id2 call callbackFunction(3)
+                `;
+
+            }
+            else if(tt == 3)
+            {
+                str = `
+                id1 --> id1Yes[Yes] 
+                        click id1Yes call callbackFunction(1) "tooltip"
+                        id1 --> id1No[No] 
+                        click id1No call callbackFunction(2) "tooltip"
+                        id1Yes -->id2{Have you taken questionnaire?}
+                        click id2 call callbackFunction(3)
+                        id2 --> id2Yes[Yes]
+                        id2 --> id2No[No]
+
+                `;
+
+
+            }
+            
+
+            let oldvalue = $('#txtData').val();
+
+            //console.log(getmaintext());
+            $('#txtData').val(getmaintext() + str);
+            GenerateDiagram();
+        };
+
+        function getmaintext()
+        {
+            return `
+            flowchart LR
+            id1{Is your application<br/> considered as SLA?}
+            click id1 call callbackFunction(0) "tooltip"
+            `;
+
+        }
+
+    </script>
+</body>
+</html>
